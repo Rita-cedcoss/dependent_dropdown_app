@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-const useFetch = (parent_id) => {
+const useFetch = (parent_id,setLoading) => {
   const[selData,setSeldata]=useState([]);
   // console.log(selData)
   useEffect(()=>{
+    setLoading(true)
     fetch('https://multi-account.sellernext.com/home/public/connector/profile/getAllCategory/', {
         method: 'POST',
         headers: {
@@ -29,7 +30,9 @@ const useFetch = (parent_id) => {
       .then(res => res.json())
       .then((result)=>{
        selData.push(result.data)
-      setSeldata([...selData])}
+      setSeldata([...selData])
+      setLoading(false)
+    }
       );
   },[parent_id])  
   return selData;

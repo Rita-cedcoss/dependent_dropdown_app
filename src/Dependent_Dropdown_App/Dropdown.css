@@ -1,0 +1,16 @@
+/* dropdowns css */
+.dropDown {
+    min-height: 200px;
+    width: 60%;
+    margin: 50px auto;
+    border: 2px solid;
+    padding: 23px;
+    line-height: 5;
+}
+/* loading css */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+}

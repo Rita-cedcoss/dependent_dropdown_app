@@ -4,11 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from '@shopify/polaris';
+import { Provider } from 'react-redux';
+import { store } from './ReduxToolkit/store';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+   
     <AppProvider>
-    <App />
+         <Provider store={store}>
+           <App />
+         </Provider>
     </AppProvider>
 );
 

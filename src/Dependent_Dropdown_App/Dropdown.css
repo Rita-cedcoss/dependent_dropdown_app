@@ -14,3 +14,25 @@
     align-items: center;
     margin-top: 25px;
 }
+/* for error message */
+.error {
+    font-size: 20px;
+    color: red;
+    text-align: center;   
+}
+.none {
+    display: none;
+}
+.block {
+    display: block;
+    min-height: 200px;
+    width: 60%;
+    margin: 50px auto;
+    border: 2px solid;
+    padding: 23px;
+    line-height: 5;
+}
+
+
+
+

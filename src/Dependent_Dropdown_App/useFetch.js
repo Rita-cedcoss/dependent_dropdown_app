@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-const useFetch = (parent_id, setLoading) => {
+const useFetch = (parent_id, setLoading ,setErrData) => {
   const [selData, setSeldata] = useState([]);
-  // Data fetch from api first time.
+  // Data fetch from api first dropdown.
   useEffect(() => {
     setLoading(true);
     fetch(
@@ -31,7 +31,7 @@ const useFetch = (parent_id, setLoading) => {
           },
         }),
       }
-    )
+    ).catch(err=>{ setErrData(err); setLoading(false)})
       .then((res) => res.json())
       .then((result) => {
         selData.push(result.data);

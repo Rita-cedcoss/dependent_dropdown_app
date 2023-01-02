@@ -17,18 +17,18 @@ const Dropdowncomponent = () => {
   const [parentid, setParentid] = useState([]);
   const [selected, setSelected] = useState("baby");
   const [loading, setLoading] = useState(false);
+  const[errData,setErrData]=useState("");
   const [selectAttribute, setAttribute] = useState("brand_name");
   const [attrlabel, setAttrlabe] = useState([]);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
   // useFetch Hook
-  const seldata = useFetch(parentid, setLoading);
+  const seldata = useFetch(parentid, setLoading,setErrData);
   const handleSelectChange = (e) => {
     setSelected(e);
     if (JSON.parse(e).hasChildren) {
       setParentid(JSON.parse(e).id);
     } else {
-      console.log(state.dropdownSliceReducer.loading);
       let obj = {};
       seldata[seldata.length - 1].map((item) => {
         if (JSON.parse(e).value === item.name) {
@@ -57,13 +57,16 @@ const Dropdowncomponent = () => {
   };
   // add attribute
   const add_attribute = () => {
-    console.log(inpValue, selectAttribute);
     let obj = [selectAttribute, inpValue];
-    attributeArr.push(obj);
-    setAttributeArr(attributeArr);
-    console.log(obj, attributeArr);
-    setValue("");
-    setAttribute("brand_name");
+    if (inpValue == "") {
+      alert("Please fill this field");
+    } else {
+      attributeArr.push(obj);
+      setAttributeArr(attributeArr);
+      console.log(obj, attributeArr);
+      setValue("");
+      setAttribute("brand_name");
+    }
   };
   return (
     <>
@@ -75,6 +78,7 @@ const Dropdowncomponent = () => {
         {seldata.map((item, i) => {
           return (
             <Selectdata
+              key={item}
               label="Categories"
               options={item.map((item1) => {
                 return {
@@ -91,8 +95,9 @@ const Dropdowncomponent = () => {
             />
           );
         })}
+        {/* loadings */}
         {loading ? (
-          <div className="loading"> 
+          <div className="loading">
             <img
               alt=""
               height="50px"
@@ -103,12 +108,17 @@ const Dropdowncomponent = () => {
         ) : (
           ""
         )}
+        {/* error message */}
+        {errData?<p>{errData}</p>:""}
       </div>
       {/* Attribute Data */}
       {state.dropdownSliceReducer.attributeArr.length == 0 ? (
         <p></p>
       ) : (
         <div className="dropDown">
+          <Text variant="heading4xl" as="h1">
+            Fill Attributes Detail
+          </Text>
           <Select
             label="Attributes"
             options={Object.keys(state.dropdownSliceReducer.attributeArr).map(
@@ -116,7 +126,7 @@ const Dropdowncomponent = () => {
                 return { label: item, value: item, disabled: false };
               }
             )}
-            onChange={(disabled) => attributeSelected(disabled)}
+            onChange={(e) => attributeSelected(e)}
             value={selectAttribute}
           />
           <TextField
@@ -126,14 +136,16 @@ const Dropdowncomponent = () => {
             type="text"
           />
           <ButtonGroup>
-            <Button onClick={add_attribute}  primary>Save</Button>
+            <Button onClick={add_attribute} primary>
+              Save
+            </Button>
           </ButtonGroup>
         </div>
       )}
       {state.dropdownSliceReducer.loading ? (
         <div className="dropDown">
           <div className="loading">
-          <img
+            <img
               alt=""
               height="50px"
               width="50px"
@@ -143,7 +155,15 @@ const Dropdowncomponent = () => {
           </div>
         </div>
       ) : (
-        ""
+        <p></p>
+      )}
+      {state.dropdownSliceReducer.message == "" ? (
+        <p></p>
+      ) : (
+        <div className="dropDown">
+           <p className="error">Error:{state.dropdownSliceReducer.message}</p>
+        </div>
+       
       )}
       {/* display data */}
       {attributeArr.length > 0 ? (

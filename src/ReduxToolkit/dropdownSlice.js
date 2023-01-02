@@ -1,13 +1,15 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, isAsyncThunkAction } from "@reduxjs/toolkit";
 import { act } from "react-dom/test-utils";
 const initialState = {
   attributeArr: [],
   loading: false,
+  message:""
 };
 // data fetch attribute api
 export const fetchAttribute = createAsyncThunk(
   "dropdownSlice/fetchAttribute",
-  async (obj) => {
+  async (obj,thunk) => {
+    let response1;
     let response = await fetch(
       "https://multi-account.sellernext.com/home/public/connector/profile/getCategoryAttributes",
       {
@@ -43,10 +45,22 @@ export const fetchAttribute = createAsyncThunk(
           },
         }),
       }
-    );
-    let response1 = await response.json();
-    console.log(response1.data);
-    return response1.data;
+    ).catch(err=>{return err});
+        try{
+          response1 = await response.json();
+        }catch(err){
+           return err
+        }
+       
+        console.log(response1);
+        if(!response1.success)
+        {
+          return thunk.rejectWithValue(response1.data);
+        }
+        else{
+          return response1.data;  
+        }
+      
   }
 );
 // Dropdown slice
@@ -62,7 +76,11 @@ const dropdownSlice = createSlice({
         state.attributeArr = action.payload.Mandantory;
         state.loading = false;
       })
-      .addCase(fetchAttribute.rejected, (state, action) => {});
+      .addCase(fetchAttribute.rejected, (state, action) => {
+         
+          state.message=action.error.message;
+          state.loading=false;
+      });
   },
 });
 export default dropdownSlice.reducer;
